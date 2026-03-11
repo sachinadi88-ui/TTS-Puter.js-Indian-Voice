@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advanced AI Text to Speech</title>
+<title>Indian AI Text to Speech</title>
 
 <script src="https://js.puter.com/v2/"></script>
 
 <style>
 
 body{
-font-family:Segoe UI,Roboto,sans-serif;
-background:#f2f4f8;
+font-family:Arial, sans-serif;
+background:#f2f2f2;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -21,49 +21,41 @@ margin:0;
 
 .container{
 background:white;
-padding:30px;
-border-radius:12px;
-box-shadow:0 6px 18px rgba(0,0,0,0.1);
+padding:25px;
+border-radius:10px;
 width:400px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
 text-align:center;
-}
-
-h1{
-margin-top:0;
-color:#333;
 }
 
 textarea{
 width:100%;
-height:120px;
+height:110px;
 padding:10px;
-border-radius:8px;
+margin-bottom:15px;
+border-radius:6px;
 border:1px solid #ccc;
 resize:none;
-font-size:16px;
-margin-bottom:15px;
 }
 
 select{
 width:100%;
 padding:10px;
-border-radius:8px;
+margin-bottom:15px;
+border-radius:6px;
 border:1px solid #ccc;
-margin-bottom:20px;
-font-size:15px;
 }
 
-.button-group{
+.buttons{
 display:flex;
 gap:10px;
 }
 
 button{
 flex:1;
-padding:12px;
+padding:10px;
 border:none;
-border-radius:8px;
-font-size:16px;
+border-radius:6px;
 color:white;
 cursor:pointer;
 }
@@ -72,16 +64,8 @@ cursor:pointer;
 background:#007bff;
 }
 
-#speak:hover{
-background:#0056b3;
-}
-
 #download{
 background:#28a745;
-}
-
-#download:hover{
-background:#1f7d34;
 }
 
 #download:disabled{
@@ -93,7 +77,6 @@ cursor:not-allowed;
 margin-top:15px;
 font-size:14px;
 color:#666;
-min-height:20px;
 }
 
 </style>
@@ -103,42 +86,19 @@ min-height:20px;
 
 <div class="container">
 
-<h1>AI Text To Speech</h1>
+<h2>Indian AI Text to Speech</h2>
 
-<textarea id="textInput" placeholder="Type something to convert into speech..."></textarea>
+<textarea id="textInput" placeholder="Type text here..."></textarea>
 
 <select id="voiceSelect">
 
-<optgroup label="US Voices">
-<option value="Joanna">Joanna (Female)</option>
-<option value="Matthew">Matthew (Male)</option>
-<option value="Joey">Joey (Male)</option>
-<option value="Kimberly">Kimberly (Female)</option>
-<option value="Salli">Salli (Female)</option>
-<option value="Kendra">Kendra (Female)</option>
-<option value="Ivy">Ivy (Child)</option>
-<option value="Justin">Justin (Child)</option>
-</optgroup>
-
-<optgroup label="British Voices">
-<option value="Amy">Amy (UK Female)</option>
-<option value="Emma">Emma (UK Female)</option>
-<option value="Brian">Brian (UK Male)</option>
-</optgroup>
-
-<optgroup label="Australian Voices">
-<option value="Nicole">Nicole (Australian Female)</option>
-<option value="Russell">Russell (Australian Male)</option>
-</optgroup>
-
-<optgroup label="Indian Voices">
 <option value="Aditi">Aditi (Indian Female)</option>
 <option value="Raveena">Raveena (Indian Female)</option>
-</optgroup>
+<option value="Arjun">Arjun (Indian Male)</option>
 
 </select>
 
-<div class="button-group">
+<div class="buttons">
 <button id="speak">Speak</button>
 <button id="download" disabled>Download</button>
 </div>
@@ -149,80 +109,58 @@ min-height:20px;
 
 <script>
 
-const speakBtn=document.getElementById("speak");
-const downloadBtn=document.getElementById("download");
+const speak=document.getElementById("speak");
+const download=document.getElementById("download");
 const textInput=document.getElementById("textInput");
 const voiceSelect=document.getElementById("voiceSelect");
 const status=document.getElementById("status");
 
 let currentAudio=null;
 
-speakBtn.addEventListener("click",async()=>{
+speak.addEventListener("click",async()=>{
 
 const text=textInput.value.trim();
-const voice=voiceSelect.value;
 
 if(!text){
-status.innerText="Please enter text first.";
-status.style.color="red";
+status.innerText="Please enter some text.";
 return;
 }
 
-status.innerText="Generating AI speech...";
-status.style.color="#444";
-
-speakBtn.disabled=true;
-downloadBtn.disabled=true;
+status.innerText="Generating speech...";
+speak.disabled=true;
 
 try{
 
 currentAudio=await puter.ai.txt2speech(text,{
-voice:voice,
-engine:"neural"
+voice:voiceSelect.value
 });
 
 currentAudio.play();
 
 status.innerText="Playing audio...";
-status.style.color="green";
+download.disabled=false;
 
-downloadBtn.disabled=false;
+}catch(err){
 
-currentAudio.onended=()=>{
-status.innerText="Finished playing. Ready to download.";
-status.style.color="#555";
-}
-
-}
-catch(error){
-
-console.error(error);
+console.error(err);
 status.innerText="Error generating speech.";
-status.style.color="red";
 
 }
 
-finally{
-
-speakBtn.disabled=false;
-
-}
+speak.disabled=false;
 
 });
 
-downloadBtn.addEventListener("click",()=>{
+download.addEventListener("click",()=>{
 
-if(currentAudio && currentAudio.src){
+if(currentAudio){
 
 const link=document.createElement("a");
-
 link.href=currentAudio.src;
-link.download="ai-generated-speech.mp3";
+link.download="indian-speech.mp3";
 
 document.body.appendChild(link);
-
 link.click();
-
 document.body.removeChild(link);
 
 }
